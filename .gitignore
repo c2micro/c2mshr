@@ -1,0 +1,10 @@
+bin/
+.idea/
+server.db
+server.db-*
+server_ent.db
+server_ent.db-*
+scripts/env
+cpu.pprof
+.devcontainer/
+*.swp

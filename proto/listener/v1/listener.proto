@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package listener.v1;
+
+import "google/protobuf/wrappers.proto";
+import "common/v1/common.proto";
+
+option go_package = "github.com/c2micro/c2mshr/proto/gen/listener/v1;listenerv1";
+
+service ListenerService {
+  // обновление информации о листенере
+  rpc UpdateListener( UpdateListenerRequest ) returns ( UpdateListenerResponse );
+
+  // регистрация нового бикона
+  rpc NewBeacon( NewBeaconRequest ) returns ( NewBeaconResponse );
+
+  // получение таска из очереди
+  rpc GetTask( GetTaskRequest ) returns ( GetTaskResponse );
+
+  // сохранение результата таска
+  rpc PutResult( PutResultRequest ) returns ( PutResultResponse );
+}
+
+message UpdateListenerRequest {
+  // название листенера
+  google.protobuf.StringValue name = 1;
+  // IP адрес, на котором листенер слушает
+  google.protobuf.StringValue ip = 2;
+  // порт, на котором листенер слушает
+  google.protobuf.UInt32Value port = 3;
+}
+
+message UpdateListenerResponse {}
+
+message NewBeaconRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона, который он генерирует на старте
+  uint32 id = 1;
+  // внешний IP адрес бикона
+  google.protobuf.StringValue ext_ip = 2;
+  // внутренний IP адрес бикона
+  google.protobuf.StringValue int_ip = 3;
+  // [ОБЯЗАТЕЛЬНОЕ] тип операционной системы, на которой запущен бикон
+  uint32 os = 4;
+  // метадата операционной системы
+  google.protobuf.StringValue os_meta = 5;
+  // имя хоста, на котором запущен бикон
+  google.protobuf.StringValue hostname = 6;
+  // имя пользователя процесса бикона
+  google.protobuf.StringValue username = 7;
+  // имя домена, в котором живет машина
+  google.protobuf.StringValue domain = 8;
+  // является ли процесс привилегированным
+  google.protobuf.BoolValue privileged = 9;
+  // имя процесса
+  google.protobuf.StringValue proc_name = 10;
+  // pid процесса
+  google.protobuf.UInt32Value pid = 11;
+  // [ОБЯЗАТЕЛЬНОЕ] архитектура процесса
+  uint32 arch = 12;
+  // [ОБЯЗАТЕЛЬНОЕ] размер sleep'a бикона
+  uint32 sleep = 13;
+  // [ОБЯЗАТЕЛЬНОЕ] размер jitter'a sleep'a
+  uint32 jitter = 14;
+  // [ОБЯЗАТЕЛЬНОЕ] капабилити бикона
+  uint32 caps = 15;
+}
+
+message NewBeaconResponse {}
+
+message GetTaskRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 1;
+}
+
+message GetTaskResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID таска
+  int64 tid = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] капабилити
+  uint32 cap = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] аргументы для капабилити
+  oneof args {
+    common.v1.CapSleep sleep = 3;
+    common.v1.CapLs ls = 4;
+    common.v1.CapPwd pwd = 5;
+    common.v1.CapCd cd = 6;
+    common.v1.CapWhoami whoami = 7;
+    common.v1.CapPs ps = 8;
+    common.v1.CapCat cat = 9;
+    common.v1.CapExec exec = 10;
+    common.v1.CapCp cp = 11;
+    common.v1.CapJobs jobs = 12;
+    common.v1.CapJobkill jobkill = 13;
+    common.v1.CapKill kill = 14;
+    common.v1.CapMv mv = 15;
+    common.v1.CapMkdir mkdir = 16;
+    common.v1.CapRm rm = 17;
+    common.v1.CapExecAssembly exec_assembly = 18;
+    common.v1.CapShellcodeInjection shellcode_injection = 19;
+    common.v1.CapDownload download = 20;
+    common.v1.CapUpload upload = 21;
+    common.v1.CapPause pause = 22;
+    common.v1.CapDestruct destruct = 23;
+    common.v1.CapExecDetach exec_detach = 24;
+    common.v1.CapShell shell = 25;
+    common.v1.CapPpid ppid = 26;
+    common.v1.CapExit exit = 27;
+    common.v1.CapSocks5 socks5 = 28;
+  };
+}
+
+message PutResultRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] ID таска
+  int64 tid = 2;
+  // бинарный output
+  google.protobuf.BytesValue output = 3;
+  // [ОБЯЗАТЕЛЬНОЕ] статус (может оставаться in progress, если задача долгоиграющая)
+  uint32 status = 4;
+}
+
+message PutResultResponse {}

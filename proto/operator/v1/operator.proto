@@ -1,0 +1,769 @@
+syntax = "proto3";
+
+package operator.v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "common/v1/common.proto";
+
+option go_package = "github.com/c2micro/c2mshr/proto/gen/operator/v1;operatorv1";
+
+service OperatorService {
+  // Hello первоначальный хендшейк и отслеживание "здоровья" оператора
+  rpc Hello ( HelloRequest ) returns ( stream HelloResponse );
+
+  // SubscribeListeners подписка на получение обновлений списка с листенерами
+  rpc SubscribeListeners ( SubscribeListenersRequest ) returns ( stream SubscribeListenersResponse );
+
+  // SubscribeBeacons подписка на получение обновлений списка с биконами
+  rpc SubscribeBeacons ( SubscribeBeaconsRequest ) returns ( stream SubscribeBeaconsResponse );
+
+  // SubscribeOperators подписка на получение обновлений списка с операторами
+  rpc SubscribeOperators ( SubscribeOperatorsRequest ) returns ( stream SubscribeOperatorsResponse );
+
+  // SubscribeChat подписка на получение обновлений списка сообщений в чате
+  rpc SubscribeChat ( SubscribeChatRequest ) returns ( stream SubscribeChatResponse );
+
+  // SubscribeCredentials подписка на получение обновлений списка кределов
+  rpc SubscribeCredentials ( SubscribeCredentialsRequest ) returns ( stream SubscribeCredentialsResponse );
+
+  // SetListenerColor обновление цвета листенера
+  rpc SetListenerColor ( SetListenerColorRequest ) returns ( SetListenerColorResponse );
+
+  // SetListenersColor обновление цвета на нескольких листенерах
+  rpc SetListenersColor ( SetListenersColorRequest ) returns ( SetListenersColorResponse );
+
+  // SetListenerNote обновление заметки листенера
+  rpc SetListenerNote ( SetListenerNoteRequest ) returns ( SetListenerNoteResponse );
+
+  // SetListenersNote обновление заметки на нескольких листенерах
+  rpc SetListenersNote ( SetListenersNoteRequest ) returns ( SetListenersNoteResponse );
+
+  // SetBeaconColor обновление цвета бикона
+  rpc SetBeaconColor ( SetBeaconColorRequest ) returns ( SetBeaconColorResponse );
+
+  // SetBeaconsColor обновление цвета на нескольких биконах
+  rpc SetBeaconsColor ( SetBeaconsColorRequest ) returns ( SetBeaconsColorResponse );
+
+  // SetBeaconNote обновление заметки бикона
+  rpc SetBeaconNote ( SetBeaconNoteRequest ) returns ( SetBeaconNoteResponse );
+
+  // SetBeaconsNote обновление заметки на нескольких биконах
+  rpc SetBeaconsNote ( SetBeaconsNoteRequest ) returns ( SetBeaconsNoteResponse );
+
+  // SetOperatorColor обновление цвета для оператора
+  rpc SetOperatorColor ( SetOperatorColorRequest ) returns ( SetOperatorColorResponse );
+
+  // SetOperatorsColor обновление цвета для нескольких операторов
+  rpc SetOperatorsColor ( SetOperatorsColorRequest ) returns ( SetOperatorsColorResponse );
+
+  // NewChatMessage создание нового сообщения в чате
+  rpc NewChatMessage ( NewChatMessageRequest ) returns ( NewChatMessageResponse );
+
+  // NewCredential создание новой связки кредов
+  rpc NewCredential ( NewCredentialRequest ) returns ( NewCredentialResponse );
+
+  // SetCredentialColor обновление цвета для кределов
+  rpc SetCredentialColor ( SetCredentialColorRequest ) returns ( SetCredentialColorResponse );
+
+  // SetCredentialsColor обновление цвета для списка кределов
+  rpc SetCredentialsColor ( SetCredentialsColorRequest ) returns ( SetCredentialsColorResponse );
+
+  // SetCredentialNote обновление заметки для кределов
+  rpc SetCredentialNote ( SetCredentialNoteRequest ) returns ( SetCredentialNoteResponse );
+
+  // SetCredentialsNote обновление заметки для списка кределов
+  rpc SetCredentialsNote ( SetCredentialsNoteRequest ) returns ( SetCredentialsNoteResponse );
+
+  // NewGroup создание группы/задач/сообщений для бикона
+  rpc NewGroup ( stream NewGroupRequest ) returns ( NewGroupResponse );
+
+  // SubscribeTasks подписка на получение обновление по таскам для биконов
+  rpc SubscribeTasks ( stream SubscribeTasksRequest ) returns ( stream SubscribeTasksResponse );
+
+  // CancelTasks отмена всех тасков (в статусе NEW), созданных оператором
+  rpc CancelTasks ( CancelTasksRequest ) returns ( CancelTasksResponse );
+}
+
+// SessionCookie тип для передачи сессионного трекера - куки
+message SessionCookie {
+  // [ОБЯЗАТЕЛЬНОЕ] значение сессионной куки
+  string value = 1;
+}
+
+
+// --> CancelTasks
+message CancelTasksRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 2;
+}
+message CancelTasksResponse {}
+// <-- CancelTasks
+
+
+// --> SetCredentialsNote
+message SetCredentialsNoteRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] список из ID кредов
+  repeated int64 cids = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] заметка на креды
+  string note = 3;
+}
+message SetCredentialsNoteResponse {}
+// <-- SetCredentialsNote
+
+
+// --> SetCredentialNote
+message SetCredentialNoteRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] ID кредов
+  int64 cid = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] заметка на креды
+  string note = 3;
+}
+message SetCredentialNoteResponse {}
+// <-- SetCredentialNote
+
+
+// --> SetCredentialsColor
+message SetCredentialsColorRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] список из ID кредов
+  repeated int64 cids = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] цвет на креды
+  uint32 color = 3;
+}
+message SetCredentialsColorResponse {}
+// <-- SetCredentialsColor
+
+
+// --> SetCredentialColor
+message SetCredentialColorRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] ID кредов
+  int64 cid = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] цвет на креды
+  uint32 color = 3;
+}
+message SetCredentialColorResponse {}
+// <-- SetCredentialColor
+
+
+// --> NewCredential
+message NewCredentialRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // username
+  google.protobuf.StringValue username = 2;
+  // password
+  google.protobuf.StringValue password = 3;
+  // realm
+  google.protobuf.StringValue realm = 4;
+  // host
+  google.protobuf.StringValue host = 5;
+}
+message NewCredentialResponse {}
+// <-- NewCredential
+
+
+// --> NewChatMessage
+message NewChatMessageRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] сообщение
+  string message = 2;
+}
+message NewChatMessageResponse {}
+// <-- NewChatMessage
+
+
+// --> SetOperatorsColor
+message SetOperatorsColorRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] список username'ов оператора
+  repeated string usernames = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] цвет бикона
+  uint32 color = 3;
+}
+message SetOperatorsColorResponse {}
+// <-- SetOperatorsColor
+
+
+// --> SetOperatorColor
+message SetOperatorColorRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] username оператора
+  string username = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] цвет бикона
+  uint32 color = 3;
+}
+message SetOperatorColorResponse {}
+// <-- SetOperatorColor
+
+
+// --> SetListenerNote
+message SetListenerNoteRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] id листенера
+  int64 lid = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] заметка листенера
+  string note = 3;
+}
+message SetListenerNoteResponse {}
+// <-- SetListenerNote
+
+
+// --> SetBeaconsNote
+message SetBeaconsNoteRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] список id биконов
+  repeated uint32 bids = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] заметка для установки
+  string note = 3;
+}
+message SetBeaconsNoteResponse {}
+// <-- SetBeaconsNote
+
+
+// --> SetBeaconNote
+message SetBeaconNoteRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] id бикона
+  uint32 bid = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] заметка бикона
+  string note = 3;
+}
+message SetBeaconNoteResponse {}
+// <-- SetBeaconNote
+
+
+// --> SetBeaconsColor
+message SetBeaconsColorRequest {
+  // [ОБЯЗАТЕЛЬНЛЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] список id биконов
+  repeated uint32 bids = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] цвет биконов
+  uint32 color = 3;
+}
+message SetBeaconsColorResponse {}
+// <-- SetBeaconsColor
+
+
+// --> SetBeaconColor
+message SetBeaconColorRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] id бикона
+  uint32 bid = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] цвет бикона
+  uint32 color = 3;
+}
+message SetBeaconColorResponse {}
+// <-- SetBeaconColor
+
+
+// --> SetListenersNote
+message SetListenersNoteRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] список id листенеров
+  repeated int64 lids = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] заметка для листенеров
+  string note = 3;
+}
+message SetListenersNoteResponse {}
+// <-- SetListenersNote
+
+
+// --> SetListenersColor
+message SetListenersColorRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] список из id листенеров
+  repeated int64 lids = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] цвет для листенеров
+  uint32 color = 3;
+}
+message SetListenersColorResponse {}
+// <-- SetListenersColor
+
+
+// --> SetListenerColor
+message SetListenerColorRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] id листенера
+  int64 lid = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] цвет листенера
+  uint32 color = 3;
+}
+message SetListenerColorResponse {}
+// <-- SetListenerColor
+
+
+// --> Hello
+message HelloRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] версия клиента
+  string version = 1;
+}
+message HandshakeResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] username оператора
+  string username = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] текущее время на сервере
+  google.protobuf.Timestamp time = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 3;
+}
+message HelloResponse {
+  oneof response {
+    HandshakeResponse handshake = 1;
+    google.protobuf.Empty empty = 2;
+  }
+}
+// <-- Hello
+
+
+// --> SubscribeListeners
+message SubscribeListenersRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+}
+message ListenerResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID листенера
+  int64 lid = 1;
+  // имя листенера
+  google.protobuf.StringValue name = 2;
+  // IP адрес, на котором листенер слушает
+  google.protobuf.StringValue ip = 3;
+  // порт, на котором листенер слушает
+  google.protobuf.UInt32Value port = 4;
+  // цвет листенера
+  google.protobuf.UInt32Value color = 5;
+  // заметка
+  google.protobuf.StringValue note = 6;
+  // время последней активности
+  google.protobuf.Timestamp last = 7;
+}
+message ListenersResponse {
+  repeated ListenerResponse listeners = 1;
+}
+message ListenerColorResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID листенера
+  int64 lid = 1;
+  // новый цвет листенера
+  google.protobuf.UInt32Value color = 2;
+}
+message ListenerNoteResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID листенера
+  int64 lid = 1;
+  // новая заметка листенера
+  google.protobuf.StringValue note = 2;
+}
+message ListenerInfoResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID листенера
+  int64 lid = 1;
+  // имя листенера
+  google.protobuf.StringValue name = 2;
+  // IP адрес, на котором листенер слушает
+  google.protobuf.StringValue ip = 3;
+  // порт, на котором листенер слушает
+  google.protobuf.UInt32Value port = 4;
+}
+message ListenerLastResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID листенера
+  int64 lid = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] время последней активности
+  google.protobuf.Timestamp last = 2;
+}
+message SubscribeListenersResponse {
+  // тип ответа
+  oneof response {
+    ListenerResponse listener = 1;
+    ListenerColorResponse color = 2;
+    ListenerNoteResponse note = 3;
+    ListenerInfoResponse info = 4;
+    ListenerLastResponse last = 5;
+    ListenersResponse listeners = 6;
+  }
+}
+// <-- SubscribeListeners
+
+
+// --> SubscribeBeacons
+message SubscribeBeaconsRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+}
+message BeaconResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] id бикона
+  uint32 bid = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] id листенера
+  int64 lid = 2;
+  // внешний IP адрес бикона
+  google.protobuf.StringValue ext_ip = 3;
+  // внутренний IP адрес бикона
+  google.protobuf.StringValue int_ip = 4;
+  // [ОБЯЗАТЕЛЬНОЕ] тип операционной системы
+  uint32 os = 5;
+  // метадата операционной системы
+  google.protobuf.StringValue os_meta = 6;
+  // имя хоста, на котором работает бикон
+  google.protobuf.StringValue hostname = 7;
+  // имя пользователя, от которого работает процесс бикона
+  google.protobuf.StringValue username = 8;
+  // домен, в котором живет хост
+  google.protobuf.StringValue domain = 9;
+  // является ли процесс бикона привилегированным
+  google.protobuf.BoolValue privileged = 10;
+  // имя процесса
+  google.protobuf.StringValue proc_name = 11;
+  // pid процесса
+  google.protobuf.UInt32Value pid = 12;
+  // [ОБЯЗАТЕЛЬНОЕ] архитектура процесса
+  uint32 arch = 13;
+  // [ОБЯЗАТЕЛЬНОЕ] время sleep'a бикона
+  uint32 sleep = 14;
+  // [ОБЯЗАТЕЛЬНОЕ] jitter sleep'a
+  uint32 jitter = 15;
+  // [ОБЯЗАТЕЛЬНОЕ] капабилити бикона
+  uint32 caps = 16;
+  // цвет бикона
+  google.protobuf.UInt32Value color = 17;
+  // заметка
+  google.protobuf.StringValue note = 18;
+  // время первого чекина бикона
+  google.protobuf.Timestamp first = 19;
+  // время последнего чекина бикона
+  google.protobuf.Timestamp last = 20;
+}
+message BeaconsResponse {
+  repeated BeaconResponse beacons = 1;
+}
+message BeaconColorResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 1;
+  // новый цвет бикона
+  google.protobuf.UInt32Value color = 2;
+}
+message BeaconNoteResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 1;
+  // новая заметка бикона
+  google.protobuf.StringValue note = 2;
+}
+message BeaconLastResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 1;
+  // обновленное время последнего чекаута
+  google.protobuf.Timestamp last = 2;
+}
+message BeaconSleepResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] время sleep'a бикона
+  uint32 sleep = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] jitter sleep'a
+  uint32 jitter = 3;
+}
+message SubscribeBeaconsResponse {
+  // тип ответа
+  oneof response {
+    BeaconResponse beacon = 1;
+    BeaconColorResponse color = 2;
+    BeaconNoteResponse note = 3;
+    BeaconLastResponse last = 4;
+    BeaconSleepResponse sleep = 5;
+    BeaconsResponse beacons = 6;
+  }
+}
+// <-- SubscribeBeacons
+
+
+// --> SubscribeOperators
+message SubscribeOperatorsRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+}
+message OperatorResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] username оператора
+  string username = 1;
+  // цвет оператора
+  google.protobuf.UInt32Value color = 2;
+  // время последней активности
+  google.protobuf.Timestamp last = 4;
+}
+message OperatorsResponse {
+  repeated OperatorResponse operators = 1;
+}
+message OperatorLastResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] username оператора
+  string username = 1;
+  // время последней активности
+  google.protobuf.Timestamp last = 2;
+}
+message OperatorColorResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] username оператора
+  string username = 1;
+  // новый цвет оператора
+  google.protobuf.UInt32Value color = 2;
+}
+message SubscribeOperatorsResponse {
+  // тип ответа
+  oneof response {
+    OperatorResponse operator = 1;
+    OperatorLastResponse last = 2;
+    OperatorColorResponse color = 3;
+    OperatorsResponse operators = 4;
+  }
+}
+// <-- SubscribeOperators
+
+
+// --> SubscribeChat
+message SubscribeChatRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+}
+message ChatResponse {
+  // время создания сообщения
+  google.protobuf.Timestamp created_at = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] кто создатель сообщения
+  string from = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] сообщение
+  string message = 3;
+}
+message ChatMessagesResponse {
+  repeated ChatResponse messages = 1;
+}
+message SubscribeChatResponse {
+  // тип ответа
+  oneof response {
+    ChatResponse message = 1;
+    ChatMessagesResponse messages = 2;
+  }
+}
+// <-- SubscribeChat
+
+
+// --> SubscribeCredentials
+message SubscribeCredentialsRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+}
+message CredentialResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID связки кредов
+  int64 cid = 1;
+  // username
+  google.protobuf.StringValue username = 2;
+  // password
+  google.protobuf.StringValue password = 3;
+  // realm
+  google.protobuf.StringValue realm = 4;
+  // host
+  google.protobuf.StringValue host = 5;
+  // [ОБЯЗАТЕЛЬНОЕ] время сохранения кредов в бд
+  google.protobuf.Timestamp created_at = 6;
+  // заметка на кредлах
+  google.protobuf.StringValue note = 7;
+  // цвет кредлов
+  google.protobuf.UInt32Value color = 8;
+}
+message CredentialsResponse {
+  repeated CredentialResponse credentials = 1;
+}
+message CredentialColorResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID кредов
+  int64 cid = 1;
+  // новый цвет у кредов
+  google.protobuf.UInt32Value color = 2;
+}
+message CredentialNoteResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID кредов
+  int64 cid = 1;
+  // новая заметка для кредов
+  google.protobuf.StringValue note = 2;
+}
+message SubscribeCredentialsResponse {
+  // тип ответа
+  oneof response {
+    CredentialResponse credential = 1;
+    CredentialColorResponse color = 2;
+    CredentialNoteResponse note = 3;
+    CredentialsResponse credentials = 4;
+  }
+}
+// <-- SubscribeCredentials
+
+
+// --> NewGroup
+message NewGroupRequest {
+  SessionCookie cookie = 1;
+  oneof type {
+    NewTaskGroupRequest group = 2;
+    NewTaskMessageRequest message = 3;
+    NewTaskRequest task = 4;
+  };
+}
+message NewTaskGroupRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] строка с командой
+  string cmd = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] будет ли видна группа другим операторам
+  bool visible = 3;
+}
+message NewTaskMessageRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] тип сообщения
+  uint32 type = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] сообщение
+  string msg = 2;
+}
+message NewTaskRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] значение капабилити
+  uint32 cap = 1;
+  oneof args {
+    common.v1.CapSleep sleep = 2;
+    common.v1.CapLs ls = 3;
+    common.v1.CapPwd pwd = 4;
+    common.v1.CapCd cd = 5;
+    common.v1.CapWhoami whoami = 6;
+    common.v1.CapPs ps = 7;
+    common.v1.CapCat cat = 8;
+    common.v1.CapExec exec = 9;
+    common.v1.CapCp cp = 10;
+    common.v1.CapJobs jobs = 11;
+    common.v1.CapJobkill jobkill = 12;
+    common.v1.CapKill kill = 13;
+    common.v1.CapMv mv = 14;
+    common.v1.CapMkdir mkdir = 15;
+    common.v1.CapRm rm = 16;
+    common.v1.CapExecAssembly exec_assembly = 17;
+    common.v1.CapShellcodeInjection shellcode_injection = 18;
+    common.v1.CapDownload download = 19;
+    common.v1.CapUpload upload = 20;
+    common.v1.CapPause pause = 21;
+    common.v1.CapDestruct destruct = 22;
+    common.v1.CapExecDetach exec_detach = 23;
+    common.v1.CapShell shell = 24;
+    common.v1.CapPpid ppid = 25;
+    common.v1.CapExit exit = 26;
+  };
+}
+message NewGroupResponse {}
+// <-- NewGroup
+
+
+// --> SubscribeTasks
+message SubscribeTasksRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  oneof type {
+    SubscribeTasksHelloRequest hello = 2;
+    StartPollBeaconRequest start = 3;
+    StopPollBeaconRequest stop = 4;
+  };
+}
+message SubscribeTasksHelloRequest {}
+message StartPollBeaconRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 1;
+}
+message StopPollBeaconRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 1;
+}
+message TasksGroupResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID группы
+  int64 gid = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] команда
+  string cmd = 3;
+  // [ОБЯЗАТЕЛЬНОЕ] автора группы
+  string author = 4;
+  // [ОБЯЗАТЕЛЬНОЕ] является ли группа видимой для других операторов
+  bool visible = 5;
+  // [ОБЯЗАТЕЛЬНОЕ] когда группа создана
+  google.protobuf.Timestamp created = 6;
+}
+message TasksMessageResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID группы
+  int64 gid = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] ID сообщения
+  int64 mid = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 3;
+  // [ОБЯЗАТЕЛЬНОЕ] тип сообщения
+  uint32 type = 4;
+  // [ОБЯЗАТЕЛЬНОЕ] сообщение
+  string message = 5;
+  // [ОБЯЗАТЕЛЬНОЕ] когда создано
+  google.protobuf.Timestamp created = 6;
+}
+message TasksResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID группы
+  int64 gid = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] ID таска
+  int64 tid = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 3;
+  // [ОБЯЗАТЕЛЬНОЕ] статус таска
+  uint32 status = 4;
+  // результат таска
+  google.protobuf.BytesValue output = 5;
+  // [ОБЯЗАТЕЛЬНОЕ] размер результата таска
+  int64 output_len = 6;
+  // [ОБЯЗАТЕЛЬНОЕ] является ли результат слишком большим
+  bool output_big = 7;
+  // [ОБЯЗАТЕЛЬНОЕ] когда создан
+  google.protobuf.Timestamp created = 8;
+}
+message TasksStatusResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID группы
+  int64 gid = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] ID таска
+  int64 tid = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 3;
+  // [ОБЯЗАТЕЛЬНОЕ] статус таска
+  uint32 status = 4;
+}
+message TasksDoneResponse {
+  // [ОБЯЗАТЕЛЬНОЕ] ID группы
+  int64 gid = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] ID таска
+  int64 tid = 2;
+  // [ОБЯЗАТЕЛЬНОЕ] ID бикона
+  uint32 bid = 3;
+  // [ОБЯЗАТЕЛЬНОЕ] статус таска
+  uint32 status = 4;
+  // результат таска
+  google.protobuf.BytesValue output = 5;
+  // [ОБЯЗАТЕЛЬНОЕ] размер результата таска
+  int64 output_len = 6;
+  // [ОБЯЗАТЕЛЬНОЕ] является ли результат слишком большим
+  bool output_big = 7;
+}
+message SubscribeTasksResponse {
+  oneof type {
+    TasksGroupResponse group = 1;
+    TasksMessageResponse message = 2;
+    TasksResponse task = 3;
+    TasksStatusResponse task_status = 4;
+    TasksDoneResponse task_done = 5;
+  };
+}
+// <-- SubscribeTasks

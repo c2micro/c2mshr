@@ -1,0 +1,131 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "github.com/c2micro/c2mshr/proto/gen/common/v1;commonv1";
+
+// CapSleep изменение sleep/jitter у бикона
+message CapSleep {
+  uint32 sleep = 1;
+  uint32 jitter = 2;
+}
+
+// CapLs получение листинга директории/файла по пути
+message CapLs {
+  string path = 1;
+}
+
+// CapPwd получение текущего рабочего пути процесса
+message CapPwd {}
+
+// CapCd изменение текущего рабочего пути процесса
+message CapCd {
+  string path = 1;
+}
+
+// CapWhoami получение информации о пользователе, под которым запущен бикон
+message CapWhoami {}
+
+// CapPs получение списка активных процессов на таргете
+message CapPs {}
+
+// CapCat печать файла по пути в консоль
+message CapCat {
+  string path = 1;
+}
+
+// CapExec выполнение команды с аргументами
+message CapExec {
+  string cmd = 1;
+  string args = 2;
+}
+
+// CapCp копирование файла/директории
+message CapCp {
+  string src = 1;
+  string dst = 2;
+}
+
+// CapJobs получение активных долгоиграющих задач внутри бикона
+message CapJobs {}
+
+// CapJobkill остановка долгоиграющей задачи бикона по его id
+message CapJobkill {
+  int64 id = 1;
+}
+
+// CapKill остановка процесса по его PID
+message CapKill {
+  uint64 pid = 1;
+}
+
+// CapMv перемещение файла
+message CapMv {
+  string src = 1;
+  string dst = 2;
+}
+
+// CapMkdir создание директори по пути
+message CapMkdir {
+  string path = 1;
+}
+
+// CapRm удаление директории/файла по пути
+message CapRm {
+  string path = 1;
+}
+
+// CapExecAssembly выполнение .net программы с аргументами в памяти процесса бикона
+message CapExecAssembly {
+  string args = 1;
+  bytes blob = 2;
+}
+
+// CapShellcodeInjection инжект шелкода в процесс
+message CapShellcodeInjection {
+  int64 pid = 1;
+  bytes blob = 2;
+}
+
+// CapDownload скачивание файла по его пути
+message CapDownload {
+  string path = 1;
+}
+
+// CapUpload загрузка данных по пути
+message CapUpload {
+  string path = 1;
+  bytes blob = 2;
+}
+
+// CapPause одноразовый sleep
+message CapPause {
+  uint32 pause = 1;
+}
+
+// CapDestruct самоуничтожение бикона
+message CapDestruct {}
+
+// CapExecDetach выполнение команды с аргументам с деатачем от основного процесса бикона
+message CapExecDetach {
+  string cmd = 1;
+  string args = 2;
+}
+
+// CapShell выполнение shell команды
+message CapShell {
+  string cmd = 1;
+}
+
+// CapPpid спуфинг PPID своего процесса
+message CapPpid {
+  int64 ppid = 1;
+}
+
+// CapExit завершение процесса бикона
+message CapExit {}
+
+// CapSocks5 передача данных для обработки как socks5
+message CapSocks5 {
+  // TODO
+}
