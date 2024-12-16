@@ -48,7 +48,7 @@ const (
 	// максимальная длина имени хоста в кредах
 	CredentialHostMaxLength = 256
 	// максимальная длина заметки в кредах
-	CredntialNoteMaxLength = 256
+	CredentialNoteMaxLength = 256
 )
 
 const (
