@@ -31,9 +31,18 @@ service ManagementService {
 
   // регенерация access токена для листенера
   rpc RegenerateListener ( RegenerateListenerRequest ) returns ( RegenerateListenerResponse );
+
+  // получение CA сертификата PKI (GRPC)
+  rpc GetCertCA ( GetCertCARequest ) returns ( GetCertCAResponse );
+
+  // получение сертификата операторского GRPC
+  rpc GetCertOperator ( GetCertOperatorRequest ) returns ( GetCertOperatorResponse );
+
+  // получение сертификата листенерового GRPC
+  rpc GetCertListener ( GetCertListenerRequest ) returns ( GetCertListenerResponse );
 }
 
-// Operator сообщение, в котором хранятся данные об отдельном операторе
+// сообщение, в котором хранятся данные об отдельном операторе
 message Operator {
   // [ОБЯЗАТЕЛЬНОЕ] имя оператора
   string username = 1;
@@ -44,7 +53,7 @@ message Operator {
 }
 
 
-// Listener сообщение, в котором хранятся данные об отдельном листенере
+// сообщение, в котором хранятся данные об отдельном листенере
 message Listener {
   // [ОБЯЗАТЕЛЬНОЕ] ID листенера
   int64 lid = 1;
@@ -60,6 +69,10 @@ message Listener {
   google.protobuf.Timestamp last = 6;
 }
 
+// сообщение, в котором хранятся данные о сертификате
+message Certificate {
+  string data = 1;
+}
 
 // --> GetOperators
 message GetOperatorsRequest {}
@@ -134,3 +147,24 @@ message RegenerateListenerResponse {
   Listener listener = 1;
 }
 // <-- RegenerateListener
+
+// --> GetCertCA
+message GetCertCARequest {}
+message GetCertCAResponse {
+  Certificate certificate = 1;
+}
+// <-- GetCertCA
+
+// --> GetCertOperator
+message GetCertOperatorRequest {}
+message GetCertOperatorResponse {
+  Certificate certificate = 1;
+}
+// <-- GetCertOperator
+
+// --> GetCertListener
+message GetCertListenerRequest {}
+message GetCertListenerResponse {
+  Certificate certificate = 1;
+}
+// <-- GetCertListener
