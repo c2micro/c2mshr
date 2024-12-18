@@ -86,7 +86,7 @@ service OperatorService {
   rpc CancelTasks ( CancelTasksRequest ) returns ( CancelTasksResponse );
 
   // получение полного output для таска по его ID. Используется для скачивания больших output'ов
-  rpc GetTaskOuput ( GetTaskOutputRequest ) returns ( GetTaskOutputResponse );
+  rpc GetTaskOutput ( GetTaskOutputRequest ) returns ( GetTaskOutputResponse );
 }
 
 // SessionCookie тип для передачи сессионного трекера - куки

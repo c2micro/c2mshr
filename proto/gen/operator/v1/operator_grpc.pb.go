@@ -44,7 +44,7 @@ const (
 	OperatorService_NewGroup_FullMethodName             = "/operator.v1.OperatorService/NewGroup"
 	OperatorService_SubscribeTasks_FullMethodName       = "/operator.v1.OperatorService/SubscribeTasks"
 	OperatorService_CancelTasks_FullMethodName          = "/operator.v1.OperatorService/CancelTasks"
-	OperatorService_GetTaskOuput_FullMethodName         = "/operator.v1.OperatorService/GetTaskOuput"
+	OperatorService_GetTaskOutput_FullMethodName        = "/operator.v1.OperatorService/GetTaskOutput"
 )
 
 // OperatorServiceClient is the client API for OperatorService service.
@@ -102,7 +102,7 @@ type OperatorServiceClient interface {
 	// отмена всех тасков (в статусе NEW), созданных оператором
 	CancelTasks(ctx context.Context, in *CancelTasksRequest, opts ...grpc.CallOption) (*CancelTasksResponse, error)
 	// получение полного output для таска по его ID. Используется для скачивания больших output'ов
-	GetTaskOuput(ctx context.Context, in *GetTaskOutputRequest, opts ...grpc.CallOption) (*GetTaskOutputResponse, error)
+	GetTaskOutput(ctx context.Context, in *GetTaskOutputRequest, opts ...grpc.CallOption) (*GetTaskOutputResponse, error)
 }
 
 type operatorServiceClient struct {
@@ -423,10 +423,10 @@ func (c *operatorServiceClient) CancelTasks(ctx context.Context, in *CancelTasks
 	return out, nil
 }
 
-func (c *operatorServiceClient) GetTaskOuput(ctx context.Context, in *GetTaskOutputRequest, opts ...grpc.CallOption) (*GetTaskOutputResponse, error) {
+func (c *operatorServiceClient) GetTaskOutput(ctx context.Context, in *GetTaskOutputRequest, opts ...grpc.CallOption) (*GetTaskOutputResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetTaskOutputResponse)
-	err := c.cc.Invoke(ctx, OperatorService_GetTaskOuput_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, OperatorService_GetTaskOutput_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -488,7 +488,7 @@ type OperatorServiceServer interface {
 	// отмена всех тасков (в статусе NEW), созданных оператором
 	CancelTasks(context.Context, *CancelTasksRequest) (*CancelTasksResponse, error)
 	// получение полного output для таска по его ID. Используется для скачивания больших output'ов
-	GetTaskOuput(context.Context, *GetTaskOutputRequest) (*GetTaskOutputResponse, error)
+	GetTaskOutput(context.Context, *GetTaskOutputRequest) (*GetTaskOutputResponse, error)
 	mustEmbedUnimplementedOperatorServiceServer()
 }
 
@@ -574,8 +574,8 @@ func (UnimplementedOperatorServiceServer) SubscribeTasks(grpc.BidiStreamingServe
 func (UnimplementedOperatorServiceServer) CancelTasks(context.Context, *CancelTasksRequest) (*CancelTasksResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CancelTasks not implemented")
 }
-func (UnimplementedOperatorServiceServer) GetTaskOuput(context.Context, *GetTaskOutputRequest) (*GetTaskOutputResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTaskOuput not implemented")
+func (UnimplementedOperatorServiceServer) GetTaskOutput(context.Context, *GetTaskOutputRequest) (*GetTaskOutputResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTaskOutput not implemented")
 }
 func (UnimplementedOperatorServiceServer) mustEmbedUnimplementedOperatorServiceServer() {}
 func (UnimplementedOperatorServiceServer) testEmbeddedByValue()                         {}
@@ -984,20 +984,20 @@ func _OperatorService_CancelTasks_Handler(srv interface{}, ctx context.Context, 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _OperatorService_GetTaskOuput_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _OperatorService_GetTaskOutput_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetTaskOutputRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(OperatorServiceServer).GetTaskOuput(ctx, in)
+		return srv.(OperatorServiceServer).GetTaskOutput(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: OperatorService_GetTaskOuput_FullMethodName,
+		FullMethod: OperatorService_GetTaskOutput_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OperatorServiceServer).GetTaskOuput(ctx, req.(*GetTaskOutputRequest))
+		return srv.(OperatorServiceServer).GetTaskOutput(ctx, req.(*GetTaskOutputRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1078,8 +1078,8 @@ var OperatorService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _OperatorService_CancelTasks_Handler,
 		},
 		{
-			MethodName: "GetTaskOuput",
-			Handler:    _OperatorService_GetTaskOuput_Handler,
+			MethodName: "GetTaskOutput",
+			Handler:    _OperatorService_GetTaskOutput_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
