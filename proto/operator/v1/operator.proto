@@ -10,80 +10,83 @@ import "common/v1/common.proto";
 option go_package = "github.com/c2micro/c2mshr/proto/gen/operator/v1;operatorv1";
 
 service OperatorService {
-  // Hello первоначальный хендшейк и отслеживание "здоровья" оператора
+  // первоначальный хендшейк и отслеживание "здоровья" оператора
   rpc Hello ( HelloRequest ) returns ( stream HelloResponse );
 
-  // SubscribeListeners подписка на получение обновлений списка с листенерами
+  // подписка на получение обновлений списка с листенерами
   rpc SubscribeListeners ( SubscribeListenersRequest ) returns ( stream SubscribeListenersResponse );
 
-  // SubscribeBeacons подписка на получение обновлений списка с биконами
+  // подписка на получение обновлений списка с биконами
   rpc SubscribeBeacons ( SubscribeBeaconsRequest ) returns ( stream SubscribeBeaconsResponse );
 
-  // SubscribeOperators подписка на получение обновлений списка с операторами
+  // подписка на получение обновлений списка с операторами
   rpc SubscribeOperators ( SubscribeOperatorsRequest ) returns ( stream SubscribeOperatorsResponse );
 
-  // SubscribeChat подписка на получение обновлений списка сообщений в чате
+  // подписка на получение обновлений списка сообщений в чате
   rpc SubscribeChat ( SubscribeChatRequest ) returns ( stream SubscribeChatResponse );
 
-  // SubscribeCredentials подписка на получение обновлений списка кределов
+  // подписка на получение обновлений списка кределов
   rpc SubscribeCredentials ( SubscribeCredentialsRequest ) returns ( stream SubscribeCredentialsResponse );
 
-  // SetListenerColor обновление цвета листенера
+  // обновление цвета листенера
   rpc SetListenerColor ( SetListenerColorRequest ) returns ( SetListenerColorResponse );
 
-  // SetListenersColor обновление цвета на нескольких листенерах
+  // обновление цвета на нескольких листенерах
   rpc SetListenersColor ( SetListenersColorRequest ) returns ( SetListenersColorResponse );
 
-  // SetListenerNote обновление заметки листенера
+  // обновление заметки листенера
   rpc SetListenerNote ( SetListenerNoteRequest ) returns ( SetListenerNoteResponse );
 
-  // SetListenersNote обновление заметки на нескольких листенерах
+  // обновление заметки на нескольких листенерах
   rpc SetListenersNote ( SetListenersNoteRequest ) returns ( SetListenersNoteResponse );
 
-  // SetBeaconColor обновление цвета бикона
+  // обновление цвета бикона
   rpc SetBeaconColor ( SetBeaconColorRequest ) returns ( SetBeaconColorResponse );
 
-  // SetBeaconsColor обновление цвета на нескольких биконах
+  // обновление цвета на нескольких биконах
   rpc SetBeaconsColor ( SetBeaconsColorRequest ) returns ( SetBeaconsColorResponse );
 
-  // SetBeaconNote обновление заметки бикона
+  // обновление заметки бикона
   rpc SetBeaconNote ( SetBeaconNoteRequest ) returns ( SetBeaconNoteResponse );
 
-  // SetBeaconsNote обновление заметки на нескольких биконах
+  // обновление заметки на нескольких биконах
   rpc SetBeaconsNote ( SetBeaconsNoteRequest ) returns ( SetBeaconsNoteResponse );
 
-  // SetOperatorColor обновление цвета для оператора
+  // обновление цвета для оператора
   rpc SetOperatorColor ( SetOperatorColorRequest ) returns ( SetOperatorColorResponse );
 
-  // SetOperatorsColor обновление цвета для нескольких операторов
+  // обновление цвета для нескольких операторов
   rpc SetOperatorsColor ( SetOperatorsColorRequest ) returns ( SetOperatorsColorResponse );
 
-  // NewChatMessage создание нового сообщения в чате
+  // создание нового сообщения в чате
   rpc NewChatMessage ( NewChatMessageRequest ) returns ( NewChatMessageResponse );
 
-  // NewCredential создание новой связки кредов
+  // создание новой связки кредов
   rpc NewCredential ( NewCredentialRequest ) returns ( NewCredentialResponse );
 
-  // SetCredentialColor обновление цвета для кределов
+  // обновление цвета для кределов
   rpc SetCredentialColor ( SetCredentialColorRequest ) returns ( SetCredentialColorResponse );
 
-  // SetCredentialsColor обновление цвета для списка кределов
+  // обновление цвета для списка кределов
   rpc SetCredentialsColor ( SetCredentialsColorRequest ) returns ( SetCredentialsColorResponse );
 
-  // SetCredentialNote обновление заметки для кределов
+  // обновление заметки для кределов
   rpc SetCredentialNote ( SetCredentialNoteRequest ) returns ( SetCredentialNoteResponse );
 
-  // SetCredentialsNote обновление заметки для списка кределов
+  // обновление заметки для списка кределов
   rpc SetCredentialsNote ( SetCredentialsNoteRequest ) returns ( SetCredentialsNoteResponse );
 
-  // NewGroup создание группы/задач/сообщений для бикона
+  // создание группы/задач/сообщений для бикона
   rpc NewGroup ( stream NewGroupRequest ) returns ( NewGroupResponse );
 
-  // SubscribeTasks подписка на получение обновление по таскам для биконов
+  // подписка на получение обновление по таскам для биконов
   rpc SubscribeTasks ( stream SubscribeTasksRequest ) returns ( stream SubscribeTasksResponse );
 
-  // CancelTasks отмена всех тасков (в статусе NEW), созданных оператором
+  // отмена всех тасков (в статусе NEW), созданных оператором
   rpc CancelTasks ( CancelTasksRequest ) returns ( CancelTasksResponse );
+
+  // получение полного output для таска по его ID. Используется для скачивания больших output'ов
+  rpc GetTaskOuput ( GetTaskOutputRequest ) returns ( GetTaskOutputResponse );
 }
 
 // SessionCookie тип для передачи сессионного трекера - куки
@@ -767,3 +770,17 @@ message SubscribeTasksResponse {
   };
 }
 // <-- SubscribeTasks
+
+
+// --> GetTaskOutput
+message GetTaskOutputRequest {
+  // [ОБЯЗАТЕЛЬНОЕ] сессионная кука
+  SessionCookie cookie = 1;
+  // [ОБЯЗАТЕЛЬНОЕ] task ID
+  int64 tid = 2;
+}
+message GetTaskOutputResponse {
+  // результат таска
+  google.protobuf.BytesValue output = 1;
+}
+// <-- GetTaskOutput
