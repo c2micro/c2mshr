@@ -1,0 +1,4 @@
+[submodule "proto/scheme"]
+	path = proto/scheme
+	url = https://github.com/c2micro/c2mproto
+  branch = master
